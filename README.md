@@ -35,6 +35,8 @@ Expected Result
 0 → Node down ❌
 
 ✅ 3. CPU Usage (%) per Server
+
+
 100 - (avg by (instance) (
   rate(node_cpu_seconds_total{mode="idle"}[5m])
 ) * 100)
@@ -47,6 +49,8 @@ Shows CPU utilization percentage per instance
 Best for dashboards & alerts
 
 ✅ 4. Memory Usage (%)
+
+
 100 * (
   1 - (
     node_memory_MemAvailable_bytes
@@ -62,6 +66,8 @@ Shows memory usage percentage
 Works on all Linux systems
 
 ✅ 5. Disk Usage (%)
+
+
 100 * (
   1 - (
     node_filesystem_avail_bytes{fstype!~"tmpfs|overlay"}
@@ -89,4 +95,6 @@ Unit: MB/s
 
 🧪 Test CPU Load (Optional)
 Ubuntu / Amazon Linux
+
+sudo dnf install -y stress-ng
 stress-ng --cpu 2 --timeout 300
