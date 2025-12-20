@@ -5,6 +5,11 @@ Use these queries in:
 
 Prometheus UI → http://<prometheus-ip>:9090
 
+Grafana UI -> http://<grafana-ip>:3000
+
+Nodeexpoter UI --> http://<node-ip>:9100
+
+Before run the script first paste ur integration key which is create from pagetduty
 Grafana panels (Prometheus data source)
 
 ✅ 1. Check if Prometheus is Running
@@ -93,8 +98,22 @@ Network incoming traffic per interface
 
 Unit: MB/s
 
+
+prometheous Query---
+
+100 * (
+  1 - (
+    node_memory_MemAvailable_bytes
+    / node_memory_MemTotal_bytes
+  )
+)
+
+
+
 🧪 Test CPU Load (Optional)
 Ubuntu / Amazon Linux
 
 sudo dnf install -y stress-ng
+
+
 stress-ng --cpu 2 --timeout 300
