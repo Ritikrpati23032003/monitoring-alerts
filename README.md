@@ -3,11 +3,15 @@
 This file contains commonly used PromQL queries to verify Prometheus, Node Exporter, CPU, Memory, Disk, and Network metrics.
 Use these queries in:
 
-Prometheus UI → http://<prometheus-ip>:9090
+Prometheus UI → http://<server-ip>:9090
 
-Grafana UI -> http://<grafana-ip>:3000
+Grafana UI -> http://<server-ip>:3000
 
-Nodeexpoter UI --> http://<node-ip>:9100
+Nodeexpoter UI --> http://<server-ip>:9100
+
+pagerduty UI--> http://<server-ip>:9093
+
+When servers are private use LoadBalancer
 
 Before run the script first paste ur integration key which is create from pagetduty
 Grafana panels (Prometheus data source)
