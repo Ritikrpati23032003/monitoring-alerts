@@ -18,6 +18,8 @@ PagerDuty (Events API v2)
 
 🚀 Installation & Setup
 🔹 Install Helm
+
+
 curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
 chmod 700 get_helm.sh
 ./get_helm.sh
@@ -29,6 +31,8 @@ helm version
 
 📦 Add Helm Repositories
 Step 1: Add Stable Helm Repo
+
+
 helm repo add stable https://charts.helm.sh/stable
 
 Step 2: Add Prometheus Community Repo
@@ -40,20 +44,29 @@ Update repos:
 helm repo update
 
 🧱 Create Namespace
+
+
 kubectl create namespace prometheus
 
 📊 Install kube-Prometheus-Stack
+
+
 helm install stable prometheus-community/kube-prometheus-stack -n prometheus
 
 🔍 Verify Installation
 Check Pods
+
 kubectl get pods -n prometheus
 
 Check Services
+
+
 kubectl get svc -n prometheus
 
 🌐 Expose Grafana & Prometheus (NodePort)
 Edit Prometheus Service
+
+
 kubectl edit svc stable-kube-prometheus-sta-prometheus -n prometheus
 
 
@@ -67,6 +80,8 @@ to:
 type: NodePort
 
 Edit Grafana Service
+
+
 kubectl edit svc stable-grafana -n prometheus
 
 
@@ -80,18 +95,26 @@ to:
 type: NodePort
 
 Verify Services
+
+
 kubectl get svc -n prometheus
 
 🔐 Get Grafana Admin Password
+
+
 kubectl get secret --namespace prometheus stable-grafana \
 -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
 
 
 Grafana URL:
 
+
 http://<Node-IP>:<Grafana-NodePort>
 
+
 🚨 PagerDuty Integration
+
+
 Step 1: Create PagerDuty Service
 
 Go to PagerDuty → Services
@@ -107,6 +130,8 @@ Step 3: Copy Integration Key
 Save the Integration Key (required in Grafana)
 
 🔔 Configure PagerDuty in Grafana
+
+
 4.1 Add PagerDuty Contact Point
 
 Go to Grafana → Alerting → Contact Points
