@@ -1,47 +1,92 @@
-✅ 1️⃣ Check if Prometheus is UP
+📊 Prometheus Monitoring Queries (README)
+
+This file contains commonly used PromQL queries to verify Prometheus, Node Exporter, CPU, Memory, Disk, and Network metrics.
+Use these queries in:
+
+Prometheus UI → http://<prometheus-ip>:9090
+
+Grafana panels (Prometheus data source)
+
+✅ 1. Check if Prometheus is Running
 
 Query
 
 up{job="prometheus"}
 
 
-Expected
+Expected Result
 
-Value = 1 → Prometheus running
+1 → Prometheus is running ✅
 
-✅ 2️⃣ Check Node Exporter status (MOST IMPORTANT)
+0 → Prometheus is down ❌
 
-Query
-
+✅ 2. Check Node Exporter Status (MOST IMPORTANT)
+Generic (all node exporters)
 up{job=~".*node.*"}
 
-
-or if your job name is ec2-node-exporters:
-
-up{job="ec2-node-exporter"}
+If job name is ec2-node-exporters
+up{job="ec2-node-exporters"}
 
 
-Expected
+Expected Result
 
-1 = node reachable
+1 → Node reachable ✅
 
-0 = node down
+0 → Node down ❌
 
-✅ 3️⃣ CPU Usage (%) per Server
+✅ 3. CPU Usage (%) per Server
 100 - (avg by (instance) (
   rate(node_cpu_seconds_total{mode="idle"}[5m])
 ) * 100)
 
-✅ 4️⃣ Memory Usage (%)
+
+Description
+
+Shows CPU utilization percentage per instance
+
+Best for dashboards & alerts
+
+✅ 4. Memory Usage (%)
 100 * (
-  1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)
+  1 - (
+    node_memory_MemAvailable_bytes
+    / node_memory_MemTotal_bytes
+  )
 )
 
-✅ 5️⃣ Disk Usage (%)
+
+Description
+
+Shows memory usage percentage
+
+Works on all Linux systems
+
+✅ 5. Disk Usage (%)
 100 * (
-  1 - (node_filesystem_avail_bytes{fstype!~"tmpfs|overlay"} 
-  / node_filesystem_size_bytes{fstype!~"tmpfs|overlay"})
+  1 - (
+    node_filesystem_avail_bytes{fstype!~"tmpfs|overlay"}
+    /
+    node_filesystem_size_bytes{fstype!~"tmpfs|overlay"}
+  )
 )
 
-✅ 6️⃣ Network Receive (MB/s)
+
+Description
+
+Excludes temporary filesystems
+
+Shows real disk usage
+
+✅ 6. Network Receive (MB/sec)
 rate(node_network_receive_bytes_total[5m]) / 1024 / 1024
+
+
+Description
+
+Network incoming traffic per interface
+
+Unit: MB/s
+
+🧪 Test CPU Load (Optional)
+Ubuntu / Amazon Linux
+stress-ng --cpu 2 --timeout 300
