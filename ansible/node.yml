@@ -1,0 +1,66 @@
+---
+- name: Install and run Node Exporter on all servers
+  hosts: all
+  become: yes
+
+  vars:
+    node_exporter_version: "1.8.2"
+    node_exporter_user: node_exporter
+    node_exporter_bin: /usr/local/bin/node_exporter
+    node_exporter_service: /etc/systemd/system/node_exporter.service
+
+  tasks:
+
+  - name: Ensure node_exporter user exists
+    user:
+      name: "{{ node_exporter_user }}"
+      shell: /bin/false
+      create_home: no
+
+  - name: Download Node Exporter
+    get_url:
+      url: "https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_version }}/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz"
+      dest: /tmp/node_exporter.tar.gz
+      mode: '0644'
+
+  - name: Extract Node Exporter archive
+    unarchive:
+      src: /tmp/node_exporter.tar.gz
+      dest: /tmp
+      remote_src: yes
+
+  - name: Install node_exporter binary
+    copy:
+      src: "/tmp/node_exporter-{{ node_exporter_version }}.linux-amd64/node_exporter"
+      dest: "{{ node_exporter_bin }}"
+      owner: "{{ node_exporter_user }}"
+      group: "{{ node_exporter_user }}"
+      mode: '0755'
+      remote_src: yes
+
+  - name: Create systemd service for node_exporter
+    copy:
+      dest: "{{ node_exporter_service }}"
+      content: |
+        [Unit]
+        Description=Node Exporter
+        After=network.target
+
+        [Service]
+        User={{ node_exporter_user }}
+        ExecStart={{ node_exporter_bin }}
+        Restart=always
+
+        [Install]
+        WantedBy=multi-user.target
+      mode: '0644'
+
+  - name: Reload systemd daemon
+    systemd:
+      daemon_reload: yes
+
+  - name: Enable and start node_exporter service
+    systemd:
+      name: node_exporter
+      enabled: yes
+      state: started
